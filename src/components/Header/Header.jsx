@@ -8,7 +8,7 @@ const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   return (
-    <div className="w-full min-h-screen" data-theme={theme}>
+    <div className="w-full" data-theme={theme}>
       <div className={`flex justify-between items-center p-4 ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"}`}>
         <div>
           <Target size={40} />
@@ -48,7 +48,7 @@ const Header = () => {
           <input 
             type="text" 
             placeholder="Search..." 
-            className={`w-[250px] p-2 rounded-lg border-2 border-gray-400 focus:outline-none focus:border-gray-500 transition-transform duration-300 ease-in-out ${theme === "dark" ?"text-white":"text-[#000000]"}`}
+            className={`w-[250px] p-2 rounded-full border-2 border-gray-400 focus:outline-none focus:border-gray-500 transition-transform duration-300 ease-in-out ${theme === "dark" ?"text-white":"text-[#000000]"}`}
           />
         </div>
       )}
