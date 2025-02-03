@@ -1,42 +1,41 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { button_name } from "../../utils/button_name";
 import { display_buttons } from "../../utils/button_name";
 import { chatSession } from "../AI/Gemini";
+import CodeDisplay from "../CodePreviewer/CodeDisplay";
+import { ThemeContext } from "../Context/ThemeContext";
 
 const Main = ({ menu, setMenu, selectedButton }) => {
   const [prompt, setPrompt] = useState("");
-  console.log(prompt);
-  const generativePrompt = `${prompt} in ${menu}.The code should follow best practices and be optimized for readability and performance. Give whole code in one file and don't give explanation.`;
-  console.log(generativePrompt);
+  const [generatedCode, setGeneratedCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const {theme} =useContext(ThemeContext);  
+
+  const generativePrompt = `Generate code for ${prompt} in ${menu}. The code should be clean and well-structured. Provide only code, no explanation.`;
 
   const generateResponse = async () => {
     try {
+      setLoading(true);
       const result = await chatSession.sendMessage(generativePrompt);
-      
-      // Get raw text response
       const textResponse = await result.response.text();
       console.log("Raw API Response:", textResponse);
-  
-      // Extract code block from response
+
       const codeMatch = textResponse.match(/```[a-zA-Z]*\n([\s\S]*?)```/);
-      
       if (codeMatch) {
-        const extractedCode = codeMatch[1]; // Extract the actual code
-        console.log("Extracted Code:", extractedCode);
-        
-        // Now you can use extractedCode to render in UI
+        setGeneratedCode(codeMatch[1].trim());
       } else {
         console.error("No code block found in API response.");
       }
     } catch (error) {
       console.error("Error processing response:", error);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div className="bg-black text-white p-6 rounded-2xl shadow-lg w-full max-w-3xl mx-auto mt-28">
+    <div className="bg-black text-white p-6 rounded-2xl shadow-lg w-full max-w-3xl mx-auto mt-28  transition-colors duration-300" data-theme={theme}>
       <h2 className="text-xl font-semibold">
         Home.{" "}
         <span className="text-gray-400">
@@ -101,11 +100,13 @@ const Main = ({ menu, setMenu, selectedButton }) => {
           onClick={generateResponse}
           className="bg-white text-black px-6 py-2 rounded-lg font-semibold cursor-pointer"
         >
-          GENERATE
+          {!loading?"GENERATE":"GENERATING..." }
         </button>
       </div>
+      {generatedCode && <CodeDisplay language={menu} generatedCode={generatedCode} />}
     </div>
   );
 };
+
 
 export default Main;
