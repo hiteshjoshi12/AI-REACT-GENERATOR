@@ -16,7 +16,7 @@ const Header = () => {
         <div className="flex items-center">
           <Target size={35} />
         </div>
-        <div className="md:flex items-center justify-center px-3 py-2 rounded-full text-sm md:text-lg font-semibold">
+        <div className="md:flex items-center justify-center md:ml-60 px-3 py-2 rounded-full text-sm md:text-lg font-semibold">
           <h1>Home. Where the AI magic of coding happens.</h1>
         </div>
         <div className="flex gap-4 items-center">
@@ -42,7 +42,7 @@ const Header = () => {
               Sign Up
             </button>
           </div>
-          
+
           <button
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-700"
             onClick={() => setMenuOpen(!menuOpen)}
