@@ -1,6 +1,6 @@
 export const button_config = [
   {
-    name: "Web",
+    name: "HTML",
     placeholder:
       "Enter your prompt to generate HTML, CSS, and JavaScript code.",
     example:

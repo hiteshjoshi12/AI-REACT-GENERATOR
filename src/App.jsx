@@ -13,7 +13,7 @@ const App = () => {
 };
 
 const ThemedApp = () => {
-  const [menu, setMenu] = useState("Web");
+  const [menu, setMenu] = useState("HTML");
   const selectedButton = button_config.find((btn) => btn.name === menu);
   const { theme } = useContext(ThemeContext);
 

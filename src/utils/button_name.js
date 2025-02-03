@@ -1,12 +1,11 @@
 export const button_name = [
-  { name: "Web" },
+  { name: "HTML" },
   { name: "Three.js" },
   { name: "Material UI" },
   { name: "Python" },
   { name: "Lua" },
   { name: "Java" },
   { name: "C++" },
-  { name: "HTML" },
   { name: "C#" },
   { name: "JavaScript" },
   { name: "PHP" },
@@ -48,7 +47,7 @@ export const button_name = [
 ];
 
 export const display_buttons = [
-  { name: "Web" },
+  { name: "HTML" },
   { name: "Three.js" },
   { name: "Material UI" },
   { name: "Python" },
