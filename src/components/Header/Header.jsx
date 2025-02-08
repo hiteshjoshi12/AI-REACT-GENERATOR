@@ -1,6 +1,7 @@
 import { Languages, Sun, Moon, Target, X, Menu } from "lucide-react";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../Context/ThemeContext";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -14,7 +15,9 @@ const Header = () => {
     >
       <div className="flex justify-between items-center p-4">
         <div className="flex items-center">
+          <Link to="/">
           <Target size={35} />
+          </Link>
         </div>
         <div className="md:flex items-center justify-center md:ml-60 px-3 py-2 rounded-full text-sm md:text-lg font-semibold">
           <h1>Home. Where the AI magic of coding happens.</h1>

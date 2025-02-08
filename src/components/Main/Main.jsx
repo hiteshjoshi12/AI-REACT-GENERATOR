@@ -5,6 +5,7 @@ import { display_buttons } from "../../utils/button_name";
 import { chatSession } from "../AI/Gemini";
 import CodeDisplay from "../CodePreviewer/CodeDisplay";
 import { ThemeContext } from "../Context/ThemeContext";
+import SimilarRecommendations from "../SimilarRecomendations/SimilarRecommendations";
 
 const Main = ({ menu, setMenu, selectedButton }) => {
   const [prompt, setPrompt] = useState("");
@@ -36,7 +37,7 @@ const Main = ({ menu, setMenu, selectedButton }) => {
 
   return (
     <div
-      className={`p-6 rounded-2xl shadow-lg w-full max-w-3xl mx-auto mt-10 transition-colors duration-300 
+      className={`p-6 rounded-2xl shadow-lg w-full max-w-5xl mx-auto mt-10 transition-colors duration-300 
       ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"} 
       sm:mt-6 sm:w-[95%]`}
     >
@@ -104,6 +105,7 @@ const Main = ({ menu, setMenu, selectedButton }) => {
           <CodeDisplay language={menu} generatedCode={generatedCode} />
         </div>
       )}
+      <SimilarRecommendations />
     </div>
   );
 };

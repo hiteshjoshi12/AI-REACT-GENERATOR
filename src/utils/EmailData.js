@@ -1,0 +1,46 @@
+export const relations = [
+  "family member",
+  "friend",
+  "colleague",
+  "boss",
+  "student",
+  "teacher",
+  "business partner",
+  "client",
+  "service provider",
+  "business associate",
+  "other",
+];
+
+export const dropDownList = [
+  "Thankyou Note",
+  "Invitation",
+  "Reminder",
+  "Newsletter",
+  "Announcement",
+  "Confirmation",
+  "Feedback Request",
+  "Data Request",
+  "Notification Email",
+  "Welcome Email",
+  "Receipt",
+  "Billing Statement",
+  "Appointment Confirmation",
+  "Order Confirmation",
+  "Shipping Notification",
+  "Password Reset",
+  "Account Activation",
+  "Survey",
+  "Promotional Offer",
+  "Event Ticket",
+];
+
+export const lang = [
+"Arabic",
+"Bengali",
+"Chinese (Mandarin)",
+"French",
+"Hindi",
+"Italian",
+"Japanese",
+]
