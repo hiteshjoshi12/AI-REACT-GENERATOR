@@ -17,6 +17,10 @@ const Main = ({ menu, setMenu, selectedButton }) => {
 
   const generateResponse = async () => {
     try {
+      if(prompt == ""){
+        alert("enter prompt")
+        return
+      }
       setLoading(true);
       const result = await chatSession.sendMessage(generativePrompt);
       const textResponse = await result.response.text();
@@ -56,7 +60,7 @@ const Main = ({ menu, setMenu, selectedButton }) => {
             key={btn.name}
             onClick={() => setMenu(btn.name)}
             className={`px-4 py-2 rounded-md text-sm 
-            ${menu === btn.name ? "text-gray-400 border-b-2 border-blue-500" : "cursor-pointer hover:text-blue-500"}`}
+            ${menu === btn.name ? " border-b-2 border-purple-500" : "cursor-pointer hover:text-purple-500"}`}
           >
             {btn.name}
           </button>
@@ -64,7 +68,7 @@ const Main = ({ menu, setMenu, selectedButton }) => {
         <select
           name="buttons"
           id="buttons"
-          className="bg-gray-900 text-white border border-gray-700 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={` ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"}  border border-purple-700 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-500`}
           onChange={(e) => setMenu(e.target.value)}
         >
           {button_name.map((item, index) => (
@@ -76,10 +80,10 @@ const Main = ({ menu, setMenu, selectedButton }) => {
       </div>
 
       {/* Prompt Input */}
-      <div className="mt-4">
+      <div className="mt-4"  >
         <input
           type="text"
-          className="w-full p-3 bg-gray-900 rounded-lg text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={`w-full p-3 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"}`}
           placeholder={selectedButton ? selectedButton.placeholder : "Enter your prompt..."}
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -93,7 +97,7 @@ const Main = ({ menu, setMenu, selectedButton }) => {
       <div className="flex justify-center md:justify-start mt-4">
         <button
           onClick={generateResponse}
-          className="bg-white text-black px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-gray-300 transition"
+          className="bg-purple-500 text-white px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-purple-600 transition"
         >
           {!loading ? "GENERATE" : "GENERATING..."}
         </button>

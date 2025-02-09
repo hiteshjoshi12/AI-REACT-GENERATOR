@@ -17,8 +17,7 @@ const generationConfig = {
   responseMimeType: "",
 };
 
-
-export  const chatSession = model.startChat({
+export const chatSession = model.startChat({
     generationConfig,
     history: [
       {
@@ -35,3 +34,24 @@ export  const chatSession = model.startChat({
       },
     ],
   });
+
+   export const EmailSession = model.startChat({
+      generationConfig,
+      history: [
+        {
+          role: "user",
+          parts: [
+            {text: "Generate a professional Thank You Note in English for my business associate named John Doe. The purpose of this email is to express gratitude for his recent support on our project. My name is Alex Smith. Format the email in a polite and formal tone, keeping it concise yet impactful."},
+          ],
+        },
+        {
+          role: "model",
+          parts: [
+            {text: "Subject: Thank You for Your Support on [Project Name]\n\nDear John,\n\nI am writing to express my sincere gratitude for your invaluable support on the recent [Project Name] project. Your contributions were instrumental in [Mention a specific positive impact or contribution, e.g., overcoming a key challenge, meeting a tight deadline, improving efficiency].\n\nI truly appreciate your dedication and collaborative spirit. It was a pleasure working with you on this initiative.\n\nThank you again for your assistance.\n\nSincerely,\n\nAlex Smith\n"},
+          ],
+        },
+      ],
+    });
+
+  
+

@@ -36,11 +36,12 @@ export const dropDownList = [
 ];
 
 export const lang = [
+"English",
+"Hindi",
 "Arabic",
 "Bengali",
 "Chinese (Mandarin)",
 "French",
-"Hindi",
 "Italian",
 "Japanese",
 ]

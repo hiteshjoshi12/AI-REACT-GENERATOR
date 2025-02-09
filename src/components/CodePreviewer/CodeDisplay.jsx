@@ -143,7 +143,7 @@ const CodeDisplay = ({ language, generatedCode }) => {
         </h3>
         <button
           onClick={handleCopy}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm transition flex items-center gap-2"
+          className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-md text-sm transition flex items-center gap-2"
         >
           <Copy className="w-4 h-4" />
           {copied ? "Copied!" : "Copy"}
@@ -162,7 +162,7 @@ const CodeDisplay = ({ language, generatedCode }) => {
         <div className="mt-4 flex justify-center">
           <button
             onClick={generatePreview}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2"
+            className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2"
           >
             {showPreview ? (
               <EyeOff className="w-4 h-4" />

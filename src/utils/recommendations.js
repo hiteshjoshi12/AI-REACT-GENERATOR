@@ -8,7 +8,7 @@ export const recommendations = [
     {
       title: "AI Email Generator",
       category: "AI Tools",
-      description: "Effortless email generation, powered by OpenAI.",
+      description: "Effortless email generation, powered by GeminiAI.",
       icon: "📩",
     },
     {

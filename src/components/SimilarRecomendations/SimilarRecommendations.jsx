@@ -22,7 +22,7 @@ const SimilarRecommendations = () => {
             </p>
             <div className="flex gap-4 overflow-x-auto">
                 {recommendations.map((rec, index) => (
-                    <div key={index} onClick={() => navigate(routes[index])} className="cursor-pointer min-w-[320px] h-[180px]">
+                    <div key={index} onClick={() => navigate(routes[index])} className="cursor-pointer min-w-[350px] h-[180px]">
                         <RecommendationCard {...rec} />
                     </div>
                 ))}
