@@ -6,6 +6,7 @@ import { button_config } from "./utils/button_config";
 import { Route, Routes } from "react-router-dom";
 import Email from "./components/EmailGeneration/Email";
 import ComingSoon from "./components/ComingSoon";
+import Homepage from "./pages/Homepage/Homepage";
 // import SimilarRecommendations from "./components/SimilarRecomendations/SimilarRecommendations";
 
 const App = () => {
@@ -25,7 +26,8 @@ const ThemedApp = () => {
       <Header />
       <main>
         <Routes>
-          <Route path="/" element={<Main menu={menu} setMenu={setMenu} selectedButton={selectedButton} />} />
+          <Route path="/" element= {<Homepage />}/>
+          <Route path="/main" element={<Main menu={menu} setMenu={setMenu} selectedButton={selectedButton} />} />
           <Route path="/email" element={<Email />} />
           <Route path="/copywrite" element={<ComingSoon />} />
           <Route path="/questions" element={<ComingSoon />} />

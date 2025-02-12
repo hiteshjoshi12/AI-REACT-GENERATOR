@@ -11,8 +11,7 @@ const SimilarRecommendations = () => {
     const navigate = useNavigate();
 
     return (
-        <div
-            className={`p-6 rounded-2xl shadow-lg w-full max-w-5xl mx-auto mt-10 transition-colors duration-300 
+        <div className={`p-6 rounded-2xl shadow-lg w-full  max-w-5xl mx-auto mt-10 transition-colors duration-300 
       ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"} 
       sm:mt-6 sm:w-[95%]`}
         >
