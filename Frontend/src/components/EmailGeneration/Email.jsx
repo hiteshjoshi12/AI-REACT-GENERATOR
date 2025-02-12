@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useContext } from "react";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 import { relations, dropDownList, lang } from "../../utils/EmailData";
 import { EmailSession } from "../AI/Gemini";
 import EmailDisplay from "./EmailDisplay";

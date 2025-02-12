@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
-import { ThemeContext } from '../../components/Context/ThemeContext';
+import { ThemeContext } from '../../Context/ThemeContext';
 
 const SubscriptionSection = ()=> {
   const { theme } = useContext(ThemeContext);

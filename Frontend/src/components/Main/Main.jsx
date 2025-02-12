@@ -4,7 +4,7 @@ import { button_name } from "../../utils/button_name";
 import { display_buttons } from "../../utils/button_name";
 import { chatSession } from "../AI/Gemini";
 import CodeDisplay from "../CodePreviewer/CodeDisplay";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 import SimilarRecommendations from "../SimilarRecomendations/SimilarRecommendations";
 
 const Main = ({ menu, setMenu, selectedButton }) => {

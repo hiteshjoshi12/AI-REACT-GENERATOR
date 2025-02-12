@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useRef, useState } from "react";
 import Typewriter from "typewriter-effect/dist/core";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext } from "../../Context/ThemeContext";
 import { Copy } from "lucide-react";
 
 const EmailDisplay = ({ emailContent }) => {

@@ -1,11 +1,19 @@
 import { Languages, Sun, Moon, Target, X, Menu } from "lucide-react";
 import { useContext, useState } from "react";
-import { ThemeContext } from "../Context/ThemeContext";
-import { Link } from "react-router-dom";
+import { ThemeContext } from "../../Context/ThemeContext";
+import { Link, useNavigate } from "react-router-dom";
+import { storeContext } from "@/Context/StoreContext";
 
-const Header = () => {
+const Header = ({ setShowLogin }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { token, setToken } = useContext(storeContext);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken("");
+    navigate("/");
+  };
 
   return (
     <div
@@ -16,7 +24,7 @@ const Header = () => {
       <div className="flex justify-between items-center p-4">
         <div className="flex items-center">
           <Link to="/">
-          <Target size={35} />
+            <Target size={35} />
           </Link>
         </div>
         <div className="md:flex items-center justify-center md:ml-60 px-3 py-2 rounded-full text-sm md:text-lg font-semibold">
@@ -38,12 +46,21 @@ const Header = () => {
                 <Moon size={18} className="text-black" />
               )}
             </button>
-            <button className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700">
-              Log In
-            </button>
-            <button className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700">
-              Sign Up
-            </button>
+            {token ? (
+              <button
+                onClick={logout}
+                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+              >
+                Log out
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowLogin(true)}
+                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+              >
+                Sign In
+              </button>
+            )}
           </div>
 
           <button
@@ -62,10 +79,10 @@ const Header = () => {
             theme === "dark" ? "bg-[#09090B]" : "bg-white"
           }`}
         >
-          <button className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700">
-            Log In
-          </button>
-          <button className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700">
+          <button
+            onClick={() => setShowLogin(true)}
+            className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+          >
             Sign Up
           </button>
           <button

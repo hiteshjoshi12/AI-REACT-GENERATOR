@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { recommendations } from '../../utils/recommendations';
 import { useNavigate } from 'react-router-dom';
 import RecommendationCard from './RecommendationCard';
-import { ThemeContext } from '../Context/ThemeContext';
+import { ThemeContext } from '../../Context/ThemeContext';
 
 const routes = ["/copywrite", "/email", "/questions"];
 
