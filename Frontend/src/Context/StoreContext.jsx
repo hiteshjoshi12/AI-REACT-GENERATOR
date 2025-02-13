@@ -2,7 +2,9 @@ import { createContext, useEffect, useState } from "react";
 export const storeContext = createContext(null);
 
 const StoreContextProvider = (props) => {
-  const url = "http://localhost:4000";
+  // const url = "http://localhost:4000";
+  const url = "https://ai-powered-microapps-suite.onrender.com";
+  
   const [token, setToken] = useState("");
   const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
 
