@@ -5,7 +5,7 @@ import { display_buttons } from "../../utils/button_name";
 import { chatSession } from "../AI/Gemini";
 import CodeDisplay from "../CodePreviewer/CodeDisplay";
 import { ThemeContext } from "../../Context/ThemeContext";
-import SimilarRecommendations from "../SimilarRecomendations/SimilarRecommendations";
+
 
 const Main = ({ menu, setMenu, selectedButton }) => {
   const [prompt, setPrompt] = useState("");
@@ -109,7 +109,7 @@ const Main = ({ menu, setMenu, selectedButton }) => {
           <CodeDisplay language={menu} generatedCode={generatedCode} />
         </div>
       )}
-      <SimilarRecommendations />
+
     </div>
   );
 };

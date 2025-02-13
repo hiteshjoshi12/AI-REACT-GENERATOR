@@ -2,14 +2,14 @@
 import { useContext, useState } from "react";
 import { assets } from "../../assets/frontend_assets/assets";
 import axios from "axios";
-
 import { toast } from "react-toastify";
 import { storeContext } from "@/Context/StoreContext";
+import { ThemeContext } from "@/Context/ThemeContext";
 
 const LoginPopup = ({ setShowLogin }) => {
-  const {url, setToken, setUserId } = useContext(storeContext);
+  const { url, setToken, setUserId } = useContext(storeContext);
   const [currentState, setCurrentState] = useState("Signup");
-//   const url = "http://localhost:4000";
+   const { theme } = useContext(ThemeContext);
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -19,39 +19,44 @@ const LoginPopup = ({ setShowLogin }) => {
   const onChangeHandler = (event) => {
     const { name, value } = event.target;
     setData((prevData) => ({ ...prevData, [name]: value }));
-  }; 
+  };
+
   const onLogin = async (event) => {
     event.preventDefault();
     const endpoint = currentState === "Login" ? "/api/users/login" : "/api/users/register";
     const newUrl = `${url}${endpoint}`;
-  
+
     try {
       const response = await axios.post(newUrl, data);
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.userId);
-  
-        setToken(response.data.token);
-        setUserId(response.data.userId);
+        const { token, userId } = response.data;
+
+        // Store token securely
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", userId);
+
+        // Update global state
+        setToken(token);
+        setUserId(userId);
         setShowLogin(false);
-  
+       toast.success(`Welcome ${data.name || "back"}!`);
+        
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again later.",error);
+      toast.error(error.response?.data?.message || "An error occurred. Please try again later.");
     }
   };
-  
 
   return (
-    <div className="fixed inset-0 z-50  flex items-center justify-center px-4 sm:px-0">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0  `}>
       <form
         onSubmit={onLogin}
-        className="bg-white w-full max-w-[400px] sm:max-w-[350px] md:max-w-[330px] p-6 rounded-lg shadow-lg flex flex-col gap-5 animate-fadeIn"
+        className={` w-full max-w-[400px] sm:max-w-[350px] md:max-w-[330px] p-6 rounded-lg shadow-lg flex flex-col gap-5 animate-fadeIn ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"}`}
       >
         {/* Header */}
-        <div className="flex justify-between items-center text-black">
+        <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">{currentState}</h2>
           <img
             onClick={() => setShowLogin(false)}
@@ -103,16 +108,18 @@ const LoginPopup = ({ setShowLogin }) => {
         </button>
 
         {/* Terms Checkbox */}
-        <div className="flex items-start gap-2 text-sm">
-          <input type="checkbox" required className="mt-1" />
-          <p>
-            By continuing, I agree to the{" "}
-            <span className="font-medium cursor-pointer text-orange-600">
-              terms of use & privacy policy
-            </span>
-            .
-          </p>
-        </div>
+        {currentState === "Signup" && (
+          <div className="flex items-start gap-2 text-sm">
+            <input type="checkbox" required className="mt-1" />
+            <p>
+              By continuing, I agree to the{" "}
+              <span className="font-medium cursor-pointer text-orange-600">
+                terms of use & privacy policy
+              </span>
+              .
+            </p>
+          </div>
+        )}
 
         {/* Toggle Login/Signup */}
         {currentState === "Login" ? (

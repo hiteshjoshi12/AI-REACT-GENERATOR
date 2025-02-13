@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { ThemeContext } from "../../Context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { storeContext } from "@/Context/StoreContext";
+import { toast } from "react-toastify";
 
 const Header = ({ setShowLogin }) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -12,7 +13,8 @@ const Header = ({ setShowLogin }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setToken("");
-    navigate("/");
+    toast.success("Logged out succesfully.")
+    navigate("/");  
   };
 
   return (
@@ -79,12 +81,21 @@ const Header = ({ setShowLogin }) => {
             theme === "dark" ? "bg-[#09090B]" : "bg-white"
           }`}
         >
-          <button
-            onClick={() => setShowLogin(true)}
-            className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
-          >
-            Sign Up
-          </button>
+          {token ? (
+              <button
+                onClick={logout}
+                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+              >
+                Log out
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowLogin(true)}
+                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+              >
+                Sign In
+              </button>
+            )}
           <button
             className="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-700"
             onClick={toggleTheme}

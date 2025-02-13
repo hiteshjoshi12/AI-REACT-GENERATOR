@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import 'dotenv/config'
 import { ConnectDb } from './config/db.js';
 import userRouter from './routes/userRouter.js';
+import protectedRoutes from './routes/protectedRoutes.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -17,6 +18,7 @@ ConnectDb();
 
 //api endpoints
 app.use('/api/users',userRouter)
+app.use("/api/protected", protectedRoutes);
 
 
 app.listen(port,()=>{

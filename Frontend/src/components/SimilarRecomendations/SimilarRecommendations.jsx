@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RecommendationCard from './RecommendationCard';
 import { ThemeContext } from '../../Context/ThemeContext';
 
-const routes = ["/copywrite", "/email", "/questions"];
+const routes = ["/react-tailwind-generator", "/email", "/questions"];
 
 const SimilarRecommendations = () => {
     const { theme } = useContext(ThemeContext);
@@ -16,10 +16,10 @@ const SimilarRecommendations = () => {
       sm:mt-6 sm:w-[95%]`}
         >
             <h2 className="text-xl font-semibold">You Might Also Like</h2>
-            <p className="text-gray-400 text-sm mb-4">
+            <p className="text-sm mb-4">
                 Related Discoveries: Handpicked apps aligned with your current selection.
             </p>
-            <div className="flex gap-4 overflow-x-auto">
+            <div className="flex gap-4 h-[230px] overflow-x-auto">
                 {recommendations.map((rec, index) => (
                     <div key={index} onClick={() => navigate(routes[index])} className="cursor-pointer min-w-[350px] h-[180px]">
                         <RecommendationCard {...rec} />

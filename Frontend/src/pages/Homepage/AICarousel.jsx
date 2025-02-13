@@ -2,32 +2,39 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import carouselImg1 from "../../assets/Homepage/carousel-2.8a3e5e2c.webp";
 import carouselImg2 from "../../assets/Homepage/React+TailwindCSSAIComponentGenerator_notext.webp";
 import carouselImg3 from "../../assets/Homepage/OutlineGeneratorAI_notext.webp";
 import carouselImg4 from "../../assets/Homepage/Penman_notext.webp";
+
 const slides = [
   {
     title: "Your go-to AI microapp platform",
     description:
       "Run all your work on one platform with specialized microapp that scale with your needs.",
     image: carouselImg1,
+    link: "/",
   },
   {
     title: "React + Tailwind CSS AI Component Generator",
     description:
       "Unleash AI Power: Craft & Preview React+Tailwind Components! Code Smarter, Create Faster, Innovate Now!",
     image: carouselImg2,
+    link: "/react-tailwind-generator",
   },
   {
     title: "Outline Generator AI",
-    description:"Boost your productivity with the Outline Generator AI microapp. Create structured outlines effortlessly for your writing projects.",
+    description:
+      "Boost your productivity with the Outline Generator AI microapp. Create structured outlines effortlessly for your writing projects.",
     image: carouselImg3,
+    link: "/questions",
   },
   {
     title: "Penman",
     description: "Write anything using AI",
     image: carouselImg4,
+    link: "/questions",
   },
 ];
 
@@ -45,15 +52,23 @@ const AICarousel = () => {
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {slides.map((slide, index) => (
-          <Card key={index} className="min-w-full h-full  text-white">
-            <CardContent className="absolute flex flex-col gap-4 h-full justify-center">
-              <div className="flex flex-col justify-center absolute gap-6 ml-8">
-                <h2 className="text-5xl w-[515px] font-bold">{slide.title}</h2>
-                <p className="text-lg">{slide.description}</p>
-              </div>
-            </CardContent>
-            <img src={slide.image} alt={slide.title}  className="rounded-lg h-full w-full"/>
-          </Card>
+          <Link to={slide.link} key={index} className="min-w-full h-full">
+            <Card className="min-w-full h-full text-white cursor-pointer">
+              <CardContent className="absolute flex flex-col gap-4 h-full justify-center">
+                <div className="flex flex-col justify-center absolute gap-6 md:ml-8 ml-5">
+                  <h2 className=" text-lg md:text-5xl w-72 md:w-[515px] font-bold">
+                    {slide.title}
+                  </h2>
+                  <p className="md:text-lg text-sm w-48">{slide.description}</p>
+                </div>
+              </CardContent>
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="rounded-lg object-cover h-full w-full"
+              />
+            </Card>
+          </Link>
         ))}
       </div>
       <Button
@@ -80,5 +95,6 @@ const AICarousel = () => {
       </div>
     </div>
   );
-}
+};
+
 export default AICarousel;
