@@ -56,3 +56,21 @@ This AI-powered code-generating platform is designed to assist developers and no
 
    ```bash
    git clone https://github.com/your-username/ai-code-generator.git
+
+   ```
+2. Navigate to the frontend directory:
+   ```bash
+   cd ai-code-generator/frontend
+   ```
+
+3. Install the dependencies:
+   ```bash
+   npm install
+   ```
+
+4.Run the frontend development server:
+```bash
+npm start
+```
+
+
