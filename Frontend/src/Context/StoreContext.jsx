@@ -1,32 +1,48 @@
 import { createContext, useEffect, useState } from "react";
+
 export const storeContext = createContext(null);
 
 const StoreContextProvider = (props) => {
-  // const url = "http://localhost:4000";
   const url = "https://ai-powered-microapps-suite.onrender.com";
   
-  const [token, setToken] = useState("");
-  const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+  // 1. Get initial values immediately
+  const initialToken = localStorage.getItem("token") || "";
+  const initialUserId = localStorage.getItem("userId") || "";
+
+  const [token, setToken] = useState(initialToken);
+  const [userId, setUserId] = useState(initialUserId);
+  
+  /** * 2. Optimization: If we found a token in localStorage instantly, 
+   * we don't strictly need to "wait" for the useEffect check. 
+   * We set isCheckingAuth to false if a token exists right away.
+   */
+  const [isCheckingAuth, setIsCheckingAuth] = useState(!initialToken);
 
   useEffect(() => {
-    async function loadData() {
+    const initAuth = () => {
       const storedToken = localStorage.getItem("token");
-      const storedUserId = localStorage.getItem("userID");
+      const storedUserId = localStorage.getItem("userId");
 
       if (storedToken) {
         setToken(storedToken);
         setUserId(storedUserId);
       }
-    }
-    loadData();
-  }, [token]);
+      // Finish the "Checking" state
+      setIsCheckingAuth(false);
+    };
+    
+    initAuth();
+  }, []); 
+
   const ContextValue = {
     url,
     token,
     setToken,
     userId,
     setUserId,
+    isCheckingAuth, 
   };
+
   return (
     <storeContext.Provider value={ContextValue}>
       {props.children}

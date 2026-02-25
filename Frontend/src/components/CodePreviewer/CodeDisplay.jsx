@@ -1,190 +1,161 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
-import { Copy, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect, useContext } from "react";
+import { Copy, Eye, Code2, Check, ExternalLink, RotateCcw } from "lucide-react";
+import { ThemeContext } from "../../Context/ThemeContext";
 
 const CodeDisplay = ({ language, generatedCode }) => {
-  const [showPreview, setShowPreview] = useState(false);
+  const [activeTab, setActiveTab] = useState("code"); // 'code' or 'preview'
   const [iframeSrcDoc, setIframeSrcDoc] = useState("");
   const [copied, setCopied] = useState(false);
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === "dark";
 
   const previewableTech = {
-    react: true,
-    vue: true,
-    angular: true,
-    svelte: true,
-    "three.js": true,
-    "material ui": true,
-    "bootstrap ui": true,
-    javascript: true,
-    html: true,
-    css: true,
-    web: true,
-    canvas: true,
-    svg: true,
-    typescript: true,
+    react: true, vue: true, angular: true, svelte: true, 
+    javascript: true, html: true, web: true, css: true,
   };
 
   const isPreviewable = previewableTech[language.toLowerCase()] || false;
 
-  const generatePreview = () => {
+  // Logic to wrap code remains the same but moved to a cleaner helper
+  const updatePreview = () => {
     if (!generatedCode || !isPreviewable) return;
 
     let wrappedCode = "";
-    switch (language.toLowerCase()) {
-      case "html":
-      case "web":
-        wrappedCode = `<!DOCTYPE html><html><head><meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <style>body { font-family: Arial, sans-serif; padding: 20px; }</style>
-          </head><body>${generatedCode}</body></html>`;
-        break;
+    const lang = language.toLowerCase();
 
-      case "javascript":
-        wrappedCode = `<!DOCTYPE html><html><head><meta charset="utf-8">
-          <style>body { font-family: Arial, sans-serif; padding: 20px; }</style>
-          </head><body><div id="output"></div><script>
-          const output = document.getElementById('output');
-          console.log = (...args) => { output.innerHTML += args.join(' ') + '<br>'; };
-          try { ${generatedCode} } catch (error) { output.innerHTML += '<p style="color: red;">Error: ' + error.message + '</p>'; }
-          </script></body></html>`;
-        break;
-
-      default:
-        wrappedCode = `<html><body>${generatedCode}</body></html>`;
-    }
-
-    // For React Code
-    if (language.toLowerCase() === "react") {
+    if (lang === "react") {
       const cleanedCode = generatedCode
-        .replace(/import\s+.*?;?\n/g, "") // Remove import statements
-        .replace(/export\s+default\s+/g, ""); // Remove export default
+        .replace(/import\s+.*?;?\n/g, "")
+        .replace(/export\s+default\s+/g, "");
 
       wrappedCode = `
         <!DOCTYPE html>
-        <html lang="en">
+        <html>
           <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>React Preview</title>
             <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
             <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
             <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                background-color: #f5f5f5;
-              }
-            </style>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <style>body { background: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }</style>
           </head>
           <body>
             <div id="root"></div>
             <script type="text/babel">
-              const { useState } = React;
-              
+              const { useState, useEffect } = React;
               try {
                 ${cleanedCode}
-                let ComponentToRender = null;
-
                 const componentMatch = ${JSON.stringify(cleanedCode)}.match(/(?:function|const|class)\\s+([A-Z][A-Za-z0-9]*)/);
                 if (componentMatch) {
-                  ComponentToRender = eval(componentMatch[1]);
+                  const Component = eval(componentMatch[1]);
+                  ReactDOM.createRoot(document.getElementById("root")).render(<Component />);
                 }
-
-                if (ComponentToRender) {
-                  ReactDOM.createRoot(document.getElementById("root")).render(
-                    React.createElement(ComponentToRender, { text: "Click Me", onClick: () => alert("Button Clicked!") })
-                  );
-                } else {
-                  throw new Error("No React component found in the code.");
-                }
-              } catch (error) {
-                document.getElementById("root").innerHTML =
-                  '<p style="color: red;">Error: ' + error.message + '</p>';
-                console.error(error);
-              }
+              } catch (e) { document.getElementById("root").innerHTML = '<pre style="color:red">'+e.message+'</pre>'; }
             </script>
           </body>
-        </html>
-      `;
+        </html>`;
+    } else {
+        // Standard HTML/JS wrap
+        wrappedCode = `<!DOCTYPE html><html><head><script src="https://cdn.tailwindcss.com"></script></head><body class="p-4">${generatedCode}</body></html>`;
     }
-
     setIframeSrcDoc(wrappedCode);
-    setShowPreview(true); // Ensure the preview is shown when code is generated
   };
+
+  useEffect(() => {
+    if (activeTab === "preview") updatePreview();
+  }, [activeTab, generatedCode]);
 
   const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(generatedCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy code:", err);
-    }
+    await navigator.clipboard.writeText(generatedCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  // Use useEffect to handle the generated code change
-  useEffect(() => {
-    // Automatically hide preview when code changes
-    setShowPreview(false);
-  }, [generatedCode]);
-
   return (
-    <div className="bg-gray-900 p-4 rounded-lg shadow-md w-full max-w-3xl mx-auto mt-6 sm:w-[95%] sm:mt-4">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-white capitalize">
-          {language} Code
-        </h3>
-        <button
-          onClick={handleCopy}
-          className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-md text-sm transition flex items-center gap-2"
-        >
-          <Copy className="w-4 h-4" />
-          {copied ? "Copied!" : "Copy"}
-        </button>
-      </div>
-
-      {/* Code Block */}
-      <div className="relative max-h-[300px] overflow-y-auto border border-gray-700 rounded-lg">
-        <pre className="p-4 bg-gray-800 text-gray-100 font-mono text-sm overflow-x-auto">
-          <code>{generatedCode}</code>
-        </pre>
-      </div>
-
-      {/* Preview Button */}
-      {isPreviewable && (
-        <div className="mt-4 flex justify-center">
+    <div className={`w-full rounded-2xl border transition-all duration-300 overflow-hidden ${
+      isDark ? "bg-[#0d0d0f] border-white/10" : "bg-slate-50 border-slate-200"
+    }`}>
+      
+      {/* Header / Tabs */}
+      <div className={`flex items-center justify-between px-4 py-2 border-b ${
+        isDark ? "bg-white/5 border-white/10" : "bg-white border-slate-200"
+      }`}>
+        <div className="flex items-center gap-1">
           <button
-            onClick={generatePreview}
-            className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2"
+            onClick={() => setActiveTab("code")}
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              activeTab === "code" 
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" 
+                : "text-slate-500 hover:text-slate-300"
+            }`}
           >
-            {showPreview ? (
-              <EyeOff className="w-4 h-4" />
-            ) : (
-              <Eye className="w-4 h-4" />
-            )}
-            {showPreview ? "Hide Preview" : "Show Preview"}
+            <Code2 size={16} /> Code
           </button>
+          
+          {isPreviewable && (
+            <button
+              onClick={() => setActiveTab("preview")}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                activeTab === "preview" 
+                  ? "bg-purple-600 text-white shadow-lg shadow-purple-500/20" 
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
+            >
+              <Eye size={16} /> Preview
+            </button>
+          )}
         </div>
-      )}
 
-      {/* Code Preview */}
-      {showPreview && (
-        <div className="mt-4 w-full">
-          <iframe
-            title="Code Preview"
-            className="w-full h-[350px] bg-white rounded-lg border border-gray-300 sm:h-[250px]"
-            srcDoc={iframeSrcDoc}
-            sandbox="allow-scripts allow-modals"
-          />
+        <div className="flex items-center gap-3">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 hidden sm:block">
+                {language}
+            </span>
+            <button
+            onClick={handleCopy}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                isDark ? "border-white/10 hover:bg-white/5" : "border-slate-200 hover:bg-slate-100"
+            }`}
+            >
+            {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+            {copied ? "Copied" : "Copy"}
+            </button>
         </div>
-      )}
+      </div>
+
+      {/* Content Area */}
+      <div className="relative">
+        {activeTab === "code" ? (
+          <div className="group">
+            <pre className={`p-6 text-sm font-mono overflow-auto max-h-[500px] leading-relaxed scrollbar-thin ${
+              isDark ? "text-slate-300" : "text-slate-700 bg-white"
+            }`}>
+              <code>{generatedCode}</code>
+            </pre>
+          </div>
+        ) : (
+          <div className={`animate-in fade-in zoom-in-95 duration-300 ${isDark ? "bg-white" : "bg-slate-200"}`}>
+            {/* Browser Frame UI */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-slate-100 border-b border-slate-300">
+                <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                </div>
+                <div className="flex-grow mx-4 px-3 py-0.5 rounded bg-white text-[10px] text-slate-400 truncate">
+                    localhost:3000/preview
+                </div>
+                <RotateCcw size={12} className="text-slate-400 cursor-pointer hover:text-purple-600" onClick={updatePreview}/>
+            </div>
+            <iframe
+              title="Code Preview"
+              className="w-full h-[500px] border-none"
+              srcDoc={iframeSrcDoc}
+              sandbox="allow-scripts allow-modals"
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

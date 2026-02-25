@@ -11,22 +11,43 @@ const SimilarRecommendations = () => {
     const navigate = useNavigate();
 
     return (
-        <div className={`p-6 rounded-2xl shadow-lg w-full  max-w-5xl mx-auto mt-10 transition-colors duration-300 
-      ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"} 
-      sm:mt-6 sm:w-[95%]`}
+        <div 
+            className={`w-full max-w-6xl mx-auto mt-12 mb-8 px-4 transition-colors duration-500 ease-in-out
+                ${theme === "dark" ? "text-slate-100" : "text-slate-900"}
+            `}
         >
-            <h2 className="text-xl font-semibold">You Might Also Like</h2>
-            <p className="text-sm mb-4">
-                Related Discoveries: Handpicked apps aligned with your current selection.
-            </p>
-            <div className="flex gap-4 h-[230px] overflow-x-auto">
+            {/* Header Section */}
+            <div className="mb-8 space-y-2">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+                    You Might Also Like
+                </h2>
+                <p className={`text-sm md:text-base ${theme === "dark" ? "text-slate-400" : "text-slate-500"}`}>
+                    Related Discoveries: Handpicked apps aligned with your current selection.
+                </p>
+            </div>
+
+            {/* Scroll Container with Hide-Scrollbar and Scroll-Snapping */}
+            <div className="flex gap-4 md:gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {recommendations.map((rec, index) => (
-                    <div key={index} onClick={() => navigate(routes[index])} className="cursor-pointer min-w-[350px] h-[180px]">
-                        <RecommendationCard {...rec} />
+                    <div 
+                        key={index} 
+                        onClick={() => navigate(routes[index])} 
+                        className="group relative cursor-pointer shrink-0 snap-start w-[85vw] sm:w-[320px] md:w-[360px] transition-all duration-300 ease-out hover:-translate-y-2"
+                        role="button"
+                        aria-label={`Maps to ${rec.title || 'recommendation'}`}
+                    >
+                        {/* Glow/Shadow effect behind the card on hover */}
+                        <div className={`absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 blur-xl ${
+                            theme === "dark" ? "bg-white/10" : "bg-black/5"
+                        }`} />
+                        
+                        {/* Ensure the actual card wrapper handles the background appropriately if it doesn't already */}
+                        <div className="relative h-full w-full">
+                            <RecommendationCard {...rec} />
+                        </div>
                     </div>
                 ))}
             </div>
-        
         </div>
     );
 };

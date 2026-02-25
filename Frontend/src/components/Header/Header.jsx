@@ -1,4 +1,4 @@
-import { Languages, Sun, Moon, Target, X, Menu } from "lucide-react";
+import { Languages, Sun, Moon, Target, X, Menu, LogOut } from "lucide-react";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../Context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,108 +10,141 @@ const Header = ({ setShowLogin }) => {
   const { token, setToken } = useContext(storeContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const isDark = theme === "dark";
+
   const logout = () => {
     localStorage.removeItem("token");
     setToken("");
-    toast.success("Logged out succesfully.")
-    navigate("/");  
+    toast.success("Logged out successfully.");
+    navigate("/");
+    setMenuOpen(false);
   };
 
   return (
-    <div
-      className={`w-full transition-colors duration-300 ${
-        theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"
+    <header
+      className={`sticky top-0 z-[100] w-full transition-all duration-300 border-b ${
+        isDark 
+          ? "bg-[#09090B]/80 border-white/10 backdrop-blur-md text-white" 
+          : "bg-white/80 border-slate-200 backdrop-blur-md text-slate-900"
       }`}
     >
-      <div className="flex justify-between items-center p-4">
-        <div className="flex items-center">
-          <Link to="/">
-            <Target size={35} />
-          </Link>
-        </div>
-        <div className="md:flex items-center justify-center md:ml-60 px-3 py-2 rounded-full text-sm md:text-lg font-semibold">
-          <h1>Home. Where the AI magic of coding happens.</h1>
-        </div>
-        <div className="flex gap-4 items-center">
-          {/* Desktop Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-white hover:bg-gray-700 cursor-pointer">
-              <Languages size={18} />
-            </button>
-            <button
-              className="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-700"
-              onClick={toggleTheme}
-            >
-              {theme === "dark" ? (
-                <Sun size={18} className="text-white" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          
+          {/* Logo Area */}
+          <div className="flex items-center shrink-0">
+            <Link to="/" className="group flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-purple-600 group-hover:bg-purple-500 transition-colors">
+                <Target size={28} className="text-white" />
+              </div>
+              <span className="hidden sm:block font-bold text-xl tracking-tight">AI MicroApp</span>
+            </Link>
+          </div>
+
+          {/* Central Tagline (Hidden on Mobile) */}
+          <div className="hidden lg:flex items-center flex-1 justify-center px-8">
+            <p className={`text-sm font-medium px-4 py-1.5 rounded-full border ${
+              isDark 
+                ? "bg-white/5 border-white/10 text-slate-400" 
+                : "bg-slate-100 border-slate-200 text-slate-600"
+            }`}>
+              Home. Where the <span className="text-purple-500 font-bold">AI magic</span> happens.
+            </p>
+          </div>
+
+          {/* Actions Area */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            
+            {/* Desktop Controls */}
+            <div className="hidden md:flex items-center gap-2">
+              <HeaderIconButton icon={<Languages size={18} />} />
+              <HeaderIconButton 
+                onClick={toggleTheme} 
+                icon={isDark ? <Sun size={18} /> : <Moon size={18} />} 
+              />
+            </div>
+
+            {/* Auth Button */}
+            <div className="hidden md:block ml-2">
+              {token ? (
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white"
+                >
+                  <LogOut size={18} />
+                  <span>Logout</span>
+                </button>
               ) : (
-                <Moon size={18} className="text-black" />
+                <button
+                  onClick={() => setShowLogin(true)}
+                  className={`px-6 py-2.5 rounded-xl font-semibold transition-all shadow-sm active:scale-95 ${
+                    isDark 
+                      ? "bg-white text-black hover:bg-slate-200" 
+                      : "bg-slate-900 text-white hover:bg-slate-800"
+                  }`}
+                >
+                  Sign In
+                </button>
               )}
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className={`md:hidden p-2 rounded-lg transition-colors ${
+                isDark ? "hover:bg-white/10" : "hover:bg-slate-100"
+              }`}
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={26} /> : <Menu size={26} />}
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      {menuOpen && (
+        <div className={`md:hidden border-t animate-in slide-in-from-top duration-300 ${
+          isDark ? "bg-[#09090B] border-white/10" : "bg-white border-slate-200"
+        }`}>
+          <div className="flex flex-col p-4 gap-4">
+            <div className="flex justify-around py-2 border-b border-white/5 mb-2">
+                <HeaderIconButton onClick={toggleTheme} icon={isDark ? <Sun size={18} /> : <Moon size={18} />} />
+                <HeaderIconButton icon={<Languages size={18} />} />
+            </div>
+            
             {token ? (
               <button
                 onClick={logout}
-                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold bg-red-500/10 text-red-500"
               >
-                Log out
+                <LogOut size={20} /> Logout
               </button>
             ) : (
               <button
-                onClick={() => setShowLogin(true)}
-                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
+                onClick={() => { setShowLogin(true); setMenuOpen(false); }}
+                className={`w-full py-4 rounded-xl font-bold ${
+                  isDark ? "bg-white text-black" : "bg-slate-900 text-white"
+                }`}
               >
                 Sign In
               </button>
             )}
           </div>
-
-          <button
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-700"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div
-          className={`md:hidden flex flex-col items-center py-4 gap-4 ${
-            theme === "dark" ? "bg-[#09090B]" : "bg-white"
-          }`}
-        >
-          {token ? (
-              <button
-                onClick={logout}
-                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
-              >
-                Log out
-              </button>
-            ) : (
-              <button
-                onClick={() => setShowLogin(true)}
-                className="border-2 px-6 py-2 rounded-full text-lg font-semibold cursor-pointer border-black bg-white text-black hover:bg-gray-300 dark:border-white dark:bg-black dark:text-white dark:hover:bg-gray-700"
-              >
-                Sign In
-              </button>
-            )}
-          <button
-            className="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-700"
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? (
-              <Sun size={18} className="text-white" />
-            ) : (
-              <Moon size={18} className="text-black" />
-            )}
-          </button>
         </div>
       )}
-
-      <hr className="border-1 border-[#3F3F46]" />
-    </div>
+    </header>
   );
 };
+
+// Sub-component for clean buttons
+const HeaderIconButton = ({ icon, onClick }) => (
+  <button
+    onClick={onClick}
+    className="w-10 h-10 flex items-center justify-center rounded-xl transition-all hover:bg-slate-500/10 border border-transparent active:scale-90"
+  >
+    {icon}
+  </button>
+);
 
 export default Header;

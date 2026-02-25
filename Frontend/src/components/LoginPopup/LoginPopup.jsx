@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useContext, useState } from "react";
-import { assets } from "../../assets/frontend_assets/assets";
+import { X, Mail, Lock, User, Loader2 } from "lucide-react"; // Added Loader2
 import axios from "axios";
 import { toast } from "react-toastify";
 import { storeContext } from "@/Context/StoreContext";
@@ -9,7 +9,10 @@ import { ThemeContext } from "@/Context/ThemeContext";
 const LoginPopup = ({ setShowLogin }) => {
   const { url, setToken, setUserId } = useContext(storeContext);
   const [currentState, setCurrentState] = useState("Signup");
-   const { theme } = useContext(ThemeContext);
+  const [isLoading, setIsLoading] = useState(false); // New Loading State
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === "dark";
+
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -23,6 +26,8 @@ const LoginPopup = ({ setShowLogin }) => {
 
   const onLogin = async (event) => {
     event.preventDefault();
+    setIsLoading(true); // Start loading
+
     const endpoint = currentState === "Login" ? "/api/users/login" : "/api/users/register";
     const newUrl = `${url}${endpoint}`;
 
@@ -30,64 +35,91 @@ const LoginPopup = ({ setShowLogin }) => {
       const response = await axios.post(newUrl, data);
       if (response.data.success) {
         const { token, userId } = response.data;
-
-        // Store token securely
         localStorage.setItem("token", token);
         localStorage.setItem("userId", userId);
-
-        // Update global state
         setToken(token);
         setUserId(userId);
         setShowLogin(false);
-       toast.success(`Welcome ${data.name || "back"}!`);
-        
+        toast.success(currentState === "Login" ? "Welcome back!" : "Account created!");
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred. Please try again later.");
+      toast.error(error.response?.data?.message || "Connection error. Please try again.");
+    } finally {
+      setIsLoading(false); // Stop loading regardless of success or failure
     }
   };
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0  `}>
-      <form
-        onSubmit={onLogin}
-        className={` w-full max-w-[400px] sm:max-w-[350px] md:max-w-[330px] p-6 rounded-lg shadow-lg flex flex-col gap-5 animate-fadeIn ${theme === "dark" ? "bg-[#09090B] text-white" : "bg-white text-black"}`}
+    <form
+      onSubmit={onLogin}
+      className={`w-full max-w-[400px] p-8 rounded-3xl shadow-2xl flex flex-col gap-6 transform transition-all animate-in zoom-in-95 duration-300 border relative ${
+        isDark 
+          ? "bg-[#121214] border-white/10 text-white" 
+          : "bg-white border-slate-200 text-slate-900"
+      }`}
+    >
+      {/* Close Button - Disabled during loading to prevent accidental close */}
+      <button 
+        type="button"
+        disabled={isLoading}
+        onClick={() => setShowLogin(false)}
+        className={`absolute top-5 right-5 p-1 rounded-full transition-colors ${
+          isLoading ? "opacity-30 cursor-not-allowed" : "hover:bg-gray-500/10"
+        }`}
       >
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">{currentState}</h2>
-          <img
-            onClick={() => setShowLogin(false)}
-            src={assets.cross_icon}
-            alt="Close"
-            className="w-4 cursor-pointer"
-          />
-        </div>
+        <X size={20} />
+      </button>
 
-        {/* Input Fields */}
-        <div className="flex flex-col gap-4">
-          {currentState !== "Login" && (
+      {/* Header */}
+      <div className="space-y-1">
+        <h2 className="text-2xl font-bold tracking-tight">
+          {currentState === "Login" ? "Welcome Back" : "Create Account"}
+        </h2>
+        <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          {isLoading ? "Authenticating..." : "Please enter your details to continue."}
+        </p>
+      </div>
+
+      {/* Input Fields */}
+      <div className={`flex flex-col gap-3 transition-opacity duration-300 ${isLoading ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
+        {currentState !== "Login" && (
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
             <input
               name="name"
               onChange={onChangeHandler}
               value={data.name}
               type="text"
-              placeholder="Your name"
+              placeholder="Full Name"
               required
-              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              autoComplete="name"
+              className={`w-full pl-10 pr-4 py-3 rounded-xl border outline-none transition-all ${
+                isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+              } focus:ring-2 focus:ring-purple-500`}
             />
-          )}
+          </div>
+        )}
+        
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
           <input
             name="email"
             onChange={onChangeHandler}
             value={data.email}
             type="email"
-            placeholder="Your email"
+            placeholder="Email Address"
             required
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            autoComplete="email"
+            className={`w-full pl-10 pr-4 py-3 rounded-xl border outline-none transition-all ${
+              isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+            } focus:ring-2 focus:ring-purple-500`}
           />
+        </div>
+
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
           <input
             name="password"
             onChange={onChangeHandler}
@@ -95,56 +127,45 @@ const LoginPopup = ({ setShowLogin }) => {
             type="password"
             placeholder="Password"
             required
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            autoComplete="current-password"
+            className={`w-full pl-10 pr-4 py-3 rounded-xl border outline-none transition-all ${
+              isDark ? "bg-white/5 border-white/10" : "bg-slate-50 border-slate-200"
+            } focus:ring-2 focus:ring-purple-500`}
           />
         </div>
+      </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full bg-[#EB6915] text-white py-2 rounded text-base font-medium transition hover:bg-orange-600"
-        >
-          {currentState === "Signup" ? "Create account" : "Login"}
-        </button>
-
-        {/* Terms Checkbox */}
-        {currentState === "Signup" && (
-          <div className="flex items-start gap-2 text-sm">
-            <input type="checkbox" required className="mt-1" />
-            <p>
-              By continuing, I agree to the{" "}
-              <span className="font-medium cursor-pointer text-orange-600">
-                terms of use & privacy policy
-              </span>
-              .
-            </p>
-          </div>
-        )}
-
-        {/* Toggle Login/Signup */}
-        {currentState === "Login" ? (
-          <p className="text-sm text-center">
-            Create a new account?{" "}
-            <span
-              onClick={() => setCurrentState("Signup")}
-              className="text-[#EB6915] font-medium cursor-pointer"
-            >
-              Click here
-            </span>
-          </p>
+      {/* Submit Button with Spinner */}
+      <button
+        type="submit"
+        disabled={isLoading}
+        className={`w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 ${
+          isLoading ? "opacity-70 cursor-wait" : "hover:opacity-90 active:scale-[0.98]"
+        }`}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 size={20} className="animate-spin" />
+            <span>Processing...</span>
+          </>
         ) : (
-          <p className="text-sm text-center">
-            Already have an account?{" "}
-            <span
-              onClick={() => setCurrentState("Login")}
-              className="text-[#EB6915] font-medium cursor-pointer"
-            >
-              Login here
-            </span>
-          </p>
+          <span>{currentState === "Signup" ? "Sign Up" : "Sign In"}</span>
         )}
-      </form>
-    </div>
+      </button>
+
+      {/* Toggle Link */}
+      {!isLoading && (
+        <p className="text-sm text-center font-medium animate-in fade-in duration-500">
+          {currentState === "Login" ? "New here?" : "Already a member?"}{" "}
+          <span
+            onClick={() => setCurrentState(currentState === "Login" ? "Signup" : "Login")}
+            className="text-purple-500 hover:underline cursor-pointer ml-1"
+          >
+            {currentState === "Login" ? "Create an account" : "Log in"}
+          </span>
+        </p>
+      )}
+    </form>
   );
 };
 
